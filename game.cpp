@@ -1,51 +1,50 @@
 #include <bits/stdc++.h>
 #include <thread>
+#include "semaphore.h"
 
 # define CHAIRS 5 /*quantidade de cadeiras para clientes*/
-typedef int semaphore;
-semaphore customers = 0;/*clientes esperando pelo serviço*/
-semaphore barbers = 0;  /* barbeiros esperando*/
-semaphore mutex = 1; /*para exclusão mútua*/
+
+Semaphore customers (0);/*clientes esperando pelo serviço*/
+Semaphore barbers  (1);  /* barbeiros esperando*/
+Semaphore mutex  (1); /*para exclusão mútua*/
 int waiting = 0; /*quantidade de clientes*/
 
-void down(semaphore* sem){
-    *sem = 0;
-}
-
-void up(semaphore* sem){
-    *sem = 1;
-}
 
 void cut_hair(){
 }
 
 void barber (void)
 {
-       while (true)
-      {
-           down(&custumers);
-           down(&mutex);
-           waiting = waiting – 1;
-           up(&barbers);
-           up(&mutex);
-           cut_hair( );
-      }
+    while (true)
+    {
+         customers.down();
+         mutex.down();;
+         waiting -=1;
+         barbers.up();
+         mutex.up();
+         cut_hair( );
+    }
 }
+
 void customer (void)
 {
-   down(&mutex);
+   mutex.down();
    if (waiting < CHAIRS)
    {
       waiting = waiting + 1;
-      up(&customers);
-      up(&mutex);
-      down(&barbers);
+      customers.up();
+      mutex.up();
+      barbers.down();
       get_haircut( ); 
     }
     else
            
-       {up(&mutex);}
+       {mutex.up();}
 }
 
-std::thread barbeiro(,);
-std::thread cliente;
+std::thread barbeiro(barber);
+std::thread cliente(customer);
+
+int main(){
+    Semaphore a(1)
+}
