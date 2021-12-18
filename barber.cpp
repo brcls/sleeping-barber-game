@@ -8,7 +8,6 @@ using namespace std;
 #define CORTANDO 1
 #define DESCANSANDO 0
 
-
 Barber::Barber(){
     state = 0;
     energy = 1000;
@@ -28,10 +27,10 @@ void Barber::cut_hair(){
 }
 
 void Barber::genereate_energy(){
-    while (state == DESCANSANDO)
+    while (Barber::state == DESCANSANDO)
     {
         std::this_thread::sleep_for(std::chrono::seconds(1));
-        energy +=100;
+        Barber::energy +=100;
         cout << energy;
     }
 }

@@ -6,7 +6,8 @@
 #include <iostream>
 #include "barber.h"
 #include "semaphore.h"
-
+int Barber::energy = 1000;
+int Barber::state=0;
 # define CHAIRS 5 /*quantidade de cadeiras para clientes*/
 
 //std::mutex mtx;

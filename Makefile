@@ -2,7 +2,7 @@ PROJECT_NAME=teste
 SOURCE_FILES=*.cpp
 HEADER_FILES=*.h
 OUTPUT_FILE=./${PROJECT_NAME}
-CFLAGS=-Wall -Wextra -Werror -g 
+CFLAGS=-Wall -Wextra -Werror -g -pthread
 #-fsanitize=address
 VFLAGS=--leak-check=full --show-leak-kinds=all --track-origins=yes
 
