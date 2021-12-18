@@ -18,7 +18,8 @@ class Barber{
             }
         }
     public:
-        int energy = 1000;
+        Barber();
+        int energy;
         void cut_hair(){
             if (energy>=200){
                 state = CORTANDO;
@@ -32,3 +33,6 @@ class Barber{
             recharge.join();
         }
 };
+Barber::Barber(){
+    energy = 1000;
+}

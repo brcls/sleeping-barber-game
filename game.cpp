@@ -14,7 +14,7 @@
 unsigned int score = 0;
 int executing = 1;
 
-Barber barber ();
+Barber barber;
 Semaphore customers (0);/*clientes esperando pelo serviço*/
 //Semaphore barbers  (0);  /* barbeiros esperando*/
 Semaphore mutex  (1); /*para exclusão mútua*/
@@ -59,17 +59,6 @@ void customer (void)
 }
 
 
-/*
-void game_logic() {
-
-    std::thread barbeiro(barber);
-    std::thread cliente(customer);
-
-    barbeiro.join();
-    cliente.join();
-}
-*/
-
 void generate_customer() {
     int max = 15, cTime;
     srand(time(0));
@@ -78,12 +67,6 @@ void generate_customer() {
     customer();
 }
 
-/*
-void regenerate_energy() {
-    std::this_thread::sleep_for(std::chrono::seconds(1);
-    energy += 100;
-}
-*/
 
 void get_input() {
     char input;
@@ -95,12 +78,12 @@ void get_input() {
 }
 
 int main(){
-    std::thread get_input(get_input);
+    std::thread leitura(get_input);
     while (executing) {
         std::thread generation(generate_customer);
         generation.join();
     }
-    get_input.join();
+    leitura.join();
     return 0;
 }
 
