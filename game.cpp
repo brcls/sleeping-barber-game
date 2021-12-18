@@ -48,43 +48,54 @@ void customer (void)
       waiting = waiting + 1;
       customers.up();
       mutex.up();
-      std::cout << "Um novo cliente chega\n";
+      std::cout << waiting << " Um novo cliente chega\n";
       //barbers.down();
       //get_haircut( ); 
     }
     else
     {
-       mutex.up();
+    //    mutex.up();
        executing = 0;
     }
 }
 
 
 void generate_customer() {
-    int max = 15, cTime;
+    int max = 3, cTime;
     srand(time(0));
-    cTime = (rand() % max) + 5;
+    cTime = (rand() % max) + 1;
     std::this_thread::sleep_for(std::chrono::seconds(cTime));
     customer();
 }
 
 
-void get_input() {
+void get_input(int* input_got) {
     char input;
     std::cin >> input;
-    if (input == 'z')
+    if (input == 'z'){
         cutting();
-    if (input == 'x')
+        *input_got =1;
+    }
+    if (input == 'x'){
         barber.sleep();
+        *input_got =1;
+    }
 }
 
 int main(){
-    std::thread leitura(get_input);
+    int input_got=0;
+    std::thread leitura(get_input, &input_got);
     while (executing) {
         std::thread generation(generate_customer);
+        if (input_got){
+            leitura.join();
+            input_got =0;
+            std::thread leitura(get_input, &input_got);
+        }
         generation.join();
     }
     leitura.join();
+    std::cout << "fechou por aqui";
     return 0;
 }
 

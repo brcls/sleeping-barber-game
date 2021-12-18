@@ -13,6 +13,7 @@ void Semaphore::down(){
         sem -= 1;
     }
     else{
-        throw std::invalid_argument( "received negative value" );
+        std::cout << "Deu ruim";
+        // throw std::invalid_argument( "received negative value" );
     }
 }

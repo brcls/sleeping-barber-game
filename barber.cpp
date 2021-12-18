@@ -22,6 +22,7 @@ void Barber::cut_hair(){
     if (energy>=200){
                 state = CORTANDO;
                 energy -=200;
+                cout << "sua energia é:" << energy;
             }
     else printf("sem energia suficiente");
 }
@@ -30,7 +31,10 @@ void Barber::genereate_energy(){
     while (Barber::state == DESCANSANDO)
     {
         std::this_thread::sleep_for(std::chrono::seconds(1));
-        Barber::energy +=100;
+        if (Barber::energy <1000){
+            Barber::energy +=100;
+            cout << "sua energia é:" << energy;
+        }
         cout << energy;
     }
 }
