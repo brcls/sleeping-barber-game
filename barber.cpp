@@ -2,7 +2,7 @@
 #include <chrono>
 #include <iostream>
 #include <thread>
-
+#include "barber.h"
 using namespace std;
 
 #define CORTANDO 1
