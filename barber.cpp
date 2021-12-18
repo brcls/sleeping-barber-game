@@ -3,14 +3,16 @@
 #include <iostream>
 #include <thread>
 
+using namespace std;
+
 #define CORTANDO 1
 #define DESCANSANDO 0
 
 class Barber{
     private:
-        int state = 0;
-        void genereate_energy(){
-            while (state = DESCANSANDO)
+        static int state;
+        static void genereate_energy(){
+            while (state == DESCANSANDO)
             {
                 std::this_thread::sleep_for(std::chrono::seconds(1));
                 energy +=100;
@@ -19,7 +21,7 @@ class Barber{
         }
     public:
         Barber();
-        int energy;
+        static int energy;
         void cut_hair(){
             if (energy>=200){
                 state = CORTANDO;
@@ -34,5 +36,6 @@ class Barber{
         }
 };
 Barber::Barber(){
+    state = 0;
     energy = 1000;
 }

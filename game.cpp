@@ -35,7 +35,7 @@ void cutting (void)
     barber.cut_hair();
     mutex.up();
     //cut_hair( );
-    cout << "Cabelo do cliente cortado\n";
+    std::cout << "Cabelo do cliente cortado\n";
     score += 500;
 }
 
@@ -47,7 +47,7 @@ void customer (void)
       waiting = waiting + 1;
       customers.up();
       mutex.up();
-      cout << "Um novo cliente chega\n";
+      std::cout << "Um novo cliente chega\n";
       //barbers.down();
       //get_haircut( ); 
     }
@@ -70,7 +70,7 @@ void generate_customer() {
 
 void get_input() {
     char input;
-    cin >> input;
+    std::cin >> input;
     if (input == 'z')
         cutting();
     if (input == 'x')

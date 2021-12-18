@@ -1,4 +1,4 @@
-#include <semaphore.h>
+#include "semaphore.h"
 
 class Semaphore{
     private:
@@ -10,17 +10,12 @@ class Semaphore{
             sem += 1;
         }
         void down(){
-            if (sem > 0) 
-                sem -= 1;
-            else
-                throw std::invalid_argument("received negative value\n");
+            sem -= 1;
         }
 };
-
 Semaphore::Semaphore(int start){
     sem = start;
 }
-
 Semaphore::Semaphore(){
     sem=0;
 }
