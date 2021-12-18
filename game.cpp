@@ -1,18 +1,22 @@
 #include <bits/stdc++.h>
 #include <thread>
-#include "semaphore.h"
 #include <mutex>
 #include <cstdlib>
 #include <chrono>
+#include <iostream>
+#include "barber.h"
+#include "semaphore.h"
 
 # define CHAIRS 5 /*quantidade de cadeiras para clientes*/
 
 //std::mutex mtx;
 
 unsigned int score = 0;
+int executing = 1;
 
+Barber barber ();
 Semaphore customers (0);/*clientes esperando pelo serviço*/
-Semaphore barbers  (0);  /* barbeiros esperando*/
+//Semaphore barbers  (0);  /* barbeiros esperando*/
 Semaphore mutex  (1); /*para exclusão mútua*/
 int waiting = 0; /*quantidade de clientes*/
 
@@ -21,15 +25,16 @@ void cut_hair(){
 }
 */
 
-void barber (void)
+void cutting (void)
 {
     customers.down();
     mutex.down();
-    waiting -=1;
-    barbers.up();
+    waiting -= 1;
+    //barbers.up();
+    std::this_thread::sleep_for(std::chrono::seconds(3));
+    barber.cut_hair();
     mutex.up();
     //cut_hair( );
-    std::this_thread::sleep_for(std::chrono::seconds(3));
     cout << "Cabelo do cliente cortado\n";
     score += 500;
 }
@@ -49,6 +54,7 @@ void customer (void)
     else
     {
        mutex.up();
+       executing = 0;
     }
 }
 
@@ -70,34 +76,31 @@ void generate_customer() {
     cTime = (rand() % max) + 5;
     std::this_thread::sleep_for(std::chrono::seconds(cTime));
     customer();
-    //cout << nCustomer;
 }
 
+/*
 void regenerate_energy() {
     std::this_thread::sleep_for(std::chrono::seconds(1);
     energy += 100;
 }
+*/
 
 void get_input() {
     char input;
     cin >> input;
     if (input == 'z')
-        barber();
+        cutting();
     if (input == 'x')
-        regenerate_energy();
+        barber.sleep();
 }
 
 int main(){
-    //std::thread game(game_logic);
-    //game.join();    
-
-    int executing = 1;
-    while (true) {
+    std::thread get_input(get_input);
+    while (executing) {
         std::thread generation(generate_customer);
-        std::thread get_input(get_input);
-        //std::thread (get_input);
         generation.join();
-        get_input.join();
     }
+    get_input.join();
+    return 0;
 }
 

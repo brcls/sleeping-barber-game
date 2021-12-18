@@ -2,8 +2,10 @@
 #include <chrono>
 #include <iostream>
 #include <thread>
+
 #define CORTANDO 1
 #define DESCANSANDO 0
+
 class Barber{
     private:
         int state = 0;
@@ -12,10 +14,11 @@ class Barber{
             {
                 std::this_thread::sleep_for(std::chrono::seconds(1));
                 energy +=100;
+                cout << energy;
             }
         }
     public:
-        int energy;
+        int energy = 1000;
         void cut_hair(){
             if (energy>=200){
                 state = CORTANDO;
