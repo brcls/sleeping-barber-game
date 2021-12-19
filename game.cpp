@@ -6,96 +6,102 @@
 #include <iostream>
 #include "barber.h"
 #include "semaphore.h"
-int Barber::energy = 1000;
-int Barber::state=0;
-# define CHAIRS 5 /*quantidade de cadeiras para clientes*/
 
-//std::mutex mtx;
+int Barber::energy = 1000;
+int Barber::state=3;
+
+#define CHAIRS 3 /*quantidade de cadeiras para clientes*/
+
+std::mutex mtx;
 
 unsigned int score = 0;
 int executing = 1;
 
 Barber barber;
 Semaphore customers (0);/*clientes esperando pelo serviço*/
-//Semaphore barbers  (0);  /* barbeiros esperando*/
 Semaphore mutex  (1); /*para exclusão mútua*/
 int waiting = 0; /*quantidade de clientes*/
-
-/*
-void cut_hair(){
-}
-*/
 
 void cutting (void)
 {
     customers.down();
-    mutex.down();
+    mtx.lock();
     waiting -= 1;
-    //barbers.up();
-    std::this_thread::sleep_for(std::chrono::seconds(3));
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     barber.cut_hair();
-    mutex.up();
-    //cut_hair( );
+    mtx.unlock();
     std::cout << "Cabelo do cliente cortado\n";
     score += 500;
 }
 
 void customer (void)
 {
-   mutex.down();
+    mtx.lock();
    if (waiting < CHAIRS)
    {
       waiting = waiting + 1;
       customers.up();
-      mutex.up();
-      std::cout << waiting << " Um novo cliente chega\n";
-      //barbers.down();
-      //get_haircut( ); 
+      mtx.unlock();
+      std::cout << " Um novo cliente chega\n";
     }
     else
     {
-    //    mutex.up();
        executing = 0;
     }
 }
 
-
 void generate_customer() {
-    int max = 3, cTime;
+    std::cout << "Entrou na thread de gerar\n";
+    int max = 5, cTime;
     srand(time(0));
-    cTime = (rand() % max) + 1;
+    cTime = (rand() % max) + 5;
     std::this_thread::sleep_for(std::chrono::seconds(cTime));
     customer();
 }
 
-
-void get_input(int* input_got) {
+void get_input(int *exec) {
+    std::cout << "Entrou na thread de pegar input\n";
     char input;
     std::cin >> input;
-    if (input == 'z'){
+    if (input == 'z' && *exec == 1){
         cutting();
-        *input_got =1;
     }
-    if (input == 'x'){
+    if (input == 'x' && *exec == 1){
         barber.sleep();
-        *input_got =1;
     }
+    if (*exec == 1)
+        get_input(exec);
+}
+
+void drenar_energia(int *exec) {
+    std::cout << barber.state << std::endl;
+    if (*exec == 0)
+        return;
+    while (barber.state == 3) {
+        std::this_thread::sleep_for(std::chrono::seconds(2));
+        if (barber.energy > 0){
+            barber.energy -=50;
+            std::cout << "sua energia é:" << barber.energy << "\n";
+        } else {
+            barber.state = 1;
+            *exec = 0;
+        }
+    }
+    while (barber.state != 3 && *exec == 1) {
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
+    drenar_energia(exec);
 }
 
 int main(){
-    int input_got=0;
-    std::thread leitura(get_input, &input_got);
+    std::thread leitura(get_input, &executing);
+    std::thread drenar(drenar_energia, &executing);
     while (executing) {
         std::thread generation(generate_customer);
-        if (input_got){
-            leitura.join();
-            input_got =0;
-            std::thread leitura(get_input, &input_got);
-        }
         generation.join();
     }
+    drenar.join();
     leitura.join();
-    std::cout << "fechou por aqui";
+    std::cout << "GAME OVER!\n";
     return 0;
 }
-
