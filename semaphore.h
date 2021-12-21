@@ -9,6 +9,7 @@ class Semaphore{
         Semaphore(int start);
         void up();
         void down();
+        int get_sem();
 };
 
 #endif

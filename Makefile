@@ -15,4 +15,4 @@ valgrind: all
 run: all
 	${OUTPUT_FILE} 
 zip: all
-	zip -r ${PROJECT_NAME} . -i \*c \*h Makefile
+	zip -r ${PROJECT_NAME} . -i \*cpp \*h Makefile
