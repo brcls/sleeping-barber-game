@@ -6,12 +6,11 @@
 #include <iostream>
 #include "barber.h"
 #include "semaphore.h"
-#define DESCANSADO  2
 
 int Barber::energy = 1000;
 int Barber::state=3;
 
-#define CHAIRS 4 /*quantidade de cadeiras para clientes*/
+#define CHAIRS 3 /*quantidade de cadeiras para clientes*/
 
 std::mutex mtx;
 
@@ -60,21 +59,6 @@ void generate_customer() {
     customer();
 }
 
-void genereate_energy(int *state){
-    while (*state == 0)
-    {
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
-        if (Barber::energy < 1000){
-            Barber::energy +=50;
-            std::cout << "sua energia é:" << barber.energy << "\n";
-        }
-        //cout << energy;
-        if (barber.energy == 1000)
-            *state = DESCANSADO;
-    }
-    std::cout << "Saiu do sleep\n";
-}
-
 void get_input(int *exec) {
     std::cout << "Entrou na thread de pegar input\n";
     char input;
@@ -84,7 +68,6 @@ void get_input(int *exec) {
     }
     if (input == 'x' && *exec == 1){
         barber.sleep();
-        std::thread recharge(genereate_energy, &barber.state);
     }
     if (*exec == 1)
         get_input(exec);
@@ -109,8 +92,6 @@ void drenar_energia(int *exec) {
     }
     drenar_energia(exec);
 }
-
-
 
 int main(){
     std::thread leitura(get_input, &executing);
