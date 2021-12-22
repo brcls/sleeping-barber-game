@@ -51,13 +51,11 @@ void display(void)
 {
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-    glLoadIdentity();
-    //Draw a pixel
+    //Draw the image pixel by pixel
     glDrawPixels(imagewidth, imageheight, GL_BGR_EXT, GL_UNSIGNED_BYTE, pixeldata);
     
     //---------------------------------
 
-    std::cout << "display energy: " << barber.energy;
     
     // Mostra a quantidade de energia na tela
 	char barberEnergy[25]={'\0'};
@@ -67,6 +65,16 @@ void display(void)
 	// Print each char
 	for(int j=0;j<30;j++){
 		glutBitmapCharacter(GLUT_BITMAP_8_BY_13, barberEnergy[j]);
+    }
+
+    // Mostra a quantidade de pontos na tela
+	char scoreDisplay[25]={'\0'};
+	sprintf(scoreDisplay, "Pontos: %d", score);// Text
+	glColor3f(1.0,1.0,1.0);// Text color
+	glRasterPos2f(0.6,-0.9);// Print position
+	// Print each char
+	for(int j=0;j<30;j++){
+		glutBitmapCharacter(GLUT_BITMAP_8_BY_13, scoreDisplay[j]);
     }
 
     glFlush();
@@ -113,10 +121,25 @@ Descricao: lista qual teclas o jogo ouve e o que fazer com tais teclas
 */
 void Keyboard(unsigned char key, int x, int y)
 {
+    //ignorar---
     int w = x + y;
     w++;
-    //ENTER
-    if (key == 13){
+    //----------
+
+    //X
+    if (key == 'x'){
+	 	std::cout << "(x)" << std::endl;
+	 	glutPostRedisplay();
+    }
+
+    //Z
+    if (key == 'z'){
+	 	std::cout << "(z)" << std::endl;
+	 	glutPostRedisplay();
+    }
+
+    //Q
+    if (key == 'q'){
 	 	std::cout << "carambolas";
 	 	glutPostRedisplay();
     }
