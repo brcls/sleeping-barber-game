@@ -45,9 +45,6 @@ Semaphore mutex  (1); /*para exclusão mútua*/
 int waiting = 0; /*quantidade de clientes*/
 
 void newPixeldata() {
-    
-    std::cout << barber.state << std::endl;
-
 
     FILE *pfile;
     
