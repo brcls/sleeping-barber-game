@@ -38,11 +38,11 @@ a função apenas informa o jogador que a energia é insuficiente e o cabelo nã
 void Barber::cut_hair(){
     // cout << "Entrou no cut_hair()\n";
     if (energy>=200){
-                mtex.lock();
                 state = CORTANDO;
+                mtex.lock();
                 energy -=200;
-                cout << "sua energia é:" << energy << "\n";
-                state = EMPEH;
+                // cout << "sua energia é:" << energy << "\n";
+                
                 mtex.unlock();
     }
     else printf("sem energia suficiente\n");
@@ -57,7 +57,7 @@ void Barber::genereate_energy(){
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
         if (Barber::energy < 1000 && Barber::state==DESCANSANDO){
             Barber::energy +=50;
-            cout << "sua energia é:" << energy << "\n";
+            // cout << "sua energia é:" << energy << "\n";
         }
         //cout << energy;
         if (Barber::energy == 1000){

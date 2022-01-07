@@ -17,8 +17,7 @@ static GLubyte *pixeldata;
 #include "semaphore.h"
 
 #define JANELA1 "Barbeiro Sonolento"
-#define JANELA2 "Info do jogo"
-#define QTDIMGS 10
+#define JANELA2 "Info da partida"
 
 //Estados do barbeiro
 #define EMPEH       2
@@ -47,6 +46,9 @@ int waiting = 0; /*quantidade de clientes*/
 
 void newPixeldata() {
     
+    std::cout << barber.state << std::endl;
+
+
     FILE *pfile;
     
     //open the certain image
@@ -63,7 +65,7 @@ void newPixeldata() {
         else if (customers.get_sem() == 1)
             pfile = fopen("assets/cut4.bmp", "rb");
     }
-    else //if (barber.state == DESCANSANDO || barber.state == EMPEH)
+    else if (barber.state == DESCANSANDO)
     {
         if (customers.get_sem() == 0)
             pfile = fopen("assets/sleep0.bmp", "rb");
@@ -75,6 +77,19 @@ void newPixeldata() {
             pfile = fopen("assets/sleep3.bmp", "rb");
         else if (customers.get_sem() == 1)
             pfile = fopen("assets/sleep4.bmp", "rb");
+    }
+    else if (barber.state == EMPEH)
+    {
+        if (customers.get_sem() == 0)
+            pfile = fopen("assets/stand0.bmp", "rb");
+        else if (customers.get_sem() == 1)
+            pfile = fopen("assets/stand1.bmp", "rb");
+        else if (customers.get_sem() == 2)
+            pfile = fopen("assets/stand2.bmp", "rb");
+        else if (customers.get_sem() == 3)
+            pfile = fopen("assets/stand3.bmp", "rb");
+        else if (customers.get_sem() == 1)
+            pfile = fopen("assets/stand4.bmp", "rb");
     }
 
     if (pfile == 0)
@@ -160,13 +175,20 @@ Descricao: faz toda a regulação de semaforos e mutex na hora decortar o cabelo
 void cutting ()
 {
     customers.down();
-    mtx.lock();
+    barber.state = CORTANDO;
+    newPixeldata();
+    glutSetWindow(1);
+    glutPostRedisplay();
+    glutMainLoopEvent();
+    std::cout << "redisplayia" << std::endl;
     waiting -= 1;
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    mtx.lock();
     barber.cut_hair();
+    std::this_thread::sleep_for(std::chrono::seconds(3));
     mtx.unlock();
+    barber.state = EMPEH;
     std::cout << "Cabelo do cliente cortado\n";
-    score += 500;
+    score += 100;
 }
 
 /*Funcao: customer
@@ -251,8 +273,7 @@ void Keyboard(unsigned char key, int x, int y)
     //----------
 
     //X
-    if (key == 'x'){
-	 	std::cout << "(x)" << std::endl;
+    if (key == 'x' || key == 'X'){
         if (customers.get_sem() > 0)
         {
             cutting();
@@ -265,12 +286,12 @@ void Keyboard(unsigned char key, int x, int y)
     }
 
     //Z
-    if (key == 'z'){
+    if (key == 'z' || key == 'Z'){
 	 	barber.sleep();
     }
 
     //Q
-    if (key == 'q'){
+    if (key == 'q' || key == 'Q'){
 	 	exit(0);
     }
 }
@@ -279,7 +300,7 @@ void Keyboard(unsigned char key, int x, int y)
 Descricao: função que fica em uma thread executando constantemente drenando energia se o barbeiro esta de pé e nao fazendo nada se ele está em outro estado
 */
 void drenar_energia(int *exec) {
-    // std::cout << barber.state << std::endl;
+
     if (*exec == PARADO)
         return;
     if (barber.state == EMPEH && *exec ==EXECUTANDO) {
