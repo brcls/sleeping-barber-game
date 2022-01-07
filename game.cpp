@@ -230,37 +230,6 @@ void generate_customer() {
     generate_customer();
 }
 
-/*Funcao: get_input
-Descricao: fica rodando em uma thread propria detectando qualquer input que o player digite
-Parâmetros: int* exec, ponteiro de inteiro que define se o jogo exta ou não sendo executado
-*/
-void get_input(int *exec) {
-    // std::cout << "Entrou na thread de pegar input\n";
-    char input;
-    std::cin >> input;
-    if(*exec == EXECUTANDO){
-        if (input == 'z'){
-            if (customers.get_sem() > 0){
-                cutting();
-                std::cout << "sua pontuacao é: " << score << '\n';
-            }
-            else{
-                std::cout << "não havia nenhum cliente na loja";
-                barber.state = EMPEH;
-            }
-        }
-        else if (input == 'x'){
-            barber.sleep();
-        }
-        else if (input == 'q'){
-            *exec = PARADO;
-        }
-    }
-    else
-        *exec = PARADO;
-    if (*exec == EXECUTANDO)
-        get_input(exec);
-}
 
 /*Funcao: Keyboard
 Descricao: lista qual teclas o jogo ouve e o que fazer com tais teclas
